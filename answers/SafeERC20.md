@@ -1,0 +1,5 @@
+Because not all ERC20 tokens implement the standard correctly, (e.g., some don't return a boolean value from `transfer`, `transferFrom`, and `approve` functions), SafeERC20 helps improve general compatibility by handling these cases correctly, making your contract safe to interact with any ERC20 token, even those that are non-compliant.
+
+The library ensures that if an ERC20 token call fails, the entire transaction is reverted. This is crucial for preventing partial state changes in your contracts, which could lead to vulnerabilities or loss of funds.
+
+You should use SafeERC20 if you're interaqcting with unknown tokens, which may or may not be implementing the ERC20 standard accurately. This is especially important when say working with DeFi applications, often handle token transfers, staking, lending, or swapping.
