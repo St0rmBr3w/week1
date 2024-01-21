@@ -43,7 +43,7 @@ contract ContinuousTokenTest is Test {
     /// @dev Checks if the minted amount matches the expected amount and if the reserve balance updates correctly
     function testMintingFunctionality() public {
         uint256 depositAmount = 100 ether;
-        
+
         vm.startPrank(alice);
         uint256 initialReserveBalance = continuousToken.reserveBalance();
         uint256 expectedMintAmount = continuousToken.getContinuousMintAmount(depositAmount);
@@ -51,7 +51,11 @@ contract ContinuousTokenTest is Test {
         vm.stopPrank();
 
         assertEq(mintAmount, expectedMintAmount, "Minted amount does not match expected amount");
-        assertEq(continuousToken.reserveBalance(), initialReserveBalance + depositAmount, "Reserve balance did not update correctly");
+        assertEq(
+            continuousToken.reserveBalance(),
+            initialReserveBalance + depositAmount,
+            "Reserve balance did not update correctly"
+        );
     }
 
     /// @notice Tests that burning tokens before the cooldown period ends results in a revert
@@ -70,13 +74,13 @@ contract ContinuousTokenTest is Test {
     /// @dev Verifies that the amount returned by getContinuousBurnAmount matches the actual return amount from burning
     function testGetContinuousBurnAmountAccuracy() public {
         uint256 depositAmount = 100 ether;
-        
+
         vm.startPrank(alice);
         uint256 mintAmount = continuousToken.mint(depositAmount);
         uint256 burnAmount = mintAmount;
         initialBalance = continuousToken.balanceOf(alice);
         uint256 expectedReturnAmount = continuousToken.getContinuousBurnAmount(burnAmount);
-        
+
         vm.warp(block.timestamp + 15 minutes); // Fast forward time to pass cooldown
         uint256 returnAmount = continuousToken.burn(burnAmount);
         vm.stopPrank();
@@ -89,13 +93,13 @@ contract ContinuousTokenTest is Test {
     /// @dev Checks if the actual return amount matches the expected return amount calculated by the contract
     function testGetContinuousBurnReturnAccuracy() public {
         uint256 depositAmount = 100 ether;
-        
+
         vm.startPrank(alice);
         uint256 mintAmount = continuousToken.mint(depositAmount);
         uint256 burnAmount = mintAmount;
         initialBalance = continuousToken.balanceOf(alice);
         uint256 expectedReturnAmount = continuousToken.getContinuousBurnAmount(burnAmount);
-        
+
         vm.warp(block.timestamp + 15 minutes); // Fast forward time to pass cooldown
         uint256 returnAmount = continuousToken.burn(burnAmount);
         vm.stopPrank();
@@ -103,16 +107,15 @@ contract ContinuousTokenTest is Test {
         assertEq(expectedReturnAmount, returnAmount, "Return amount from burn incorrect");
     }
 
-
     /// @notice Tests burning an amount of tokens greater than the total supply results in a revert
     /// @dev Ensures that the contract does not allow burning more tokens than the user's balance
     function testBurningBeyondSupply() public {
         uint256 depositAmount = 100 ether;
-        
+
         vm.startPrank(alice);
         uint256 mintAmount = continuousToken.mint(depositAmount);
         uint256 burnAmount = mintAmount + 1;
-        
+
         vm.warp(block.timestamp + 30 minutes); // Fast forward time to pass cooldown
         vm.expectRevert("Balance must be greater than or equal to burn amount.");
         continuousToken.burn(burnAmount);
@@ -155,5 +158,4 @@ contract ContinuousTokenTest is Test {
     // function testLinearPriceIncrease() public {
     //     ...
     // }
-
 }

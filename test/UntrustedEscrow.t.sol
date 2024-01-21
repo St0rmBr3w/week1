@@ -66,7 +66,7 @@ contract UntrustedEscrowTest is Test {
 
     function testSuccessfulReleaseTokenEscrow() public {
         uint256 initialBalance = IERC20(tokenERC20).balanceOf(beneficiary);
-        
+
         vm.startPrank(creator);
         uint256 escrowId = escrow.createTokenEscrow(address(tokenERC20), beneficiary, amount);
         vm.stopPrank();

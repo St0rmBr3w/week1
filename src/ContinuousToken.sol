@@ -44,7 +44,6 @@ contract ContinuousToken is BancorFormula, ERC20, Ownable2Step {
     /// @param _continuousTokenSymbol Symbol of the continuous token.
     constructor(address _reserveTokenAddress, string memory _continuousTokenName, string memory _continuousTokenSymbol)
         ERC20(_continuousTokenName, _continuousTokenSymbol)
-        Ownable2Step()
         Ownable(msg.sender)
     {
         reserveTokenAddress = _reserveTokenAddress;

@@ -7,7 +7,7 @@ import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol
 
 contract UntrustedEscrow is ReentrancyGuard {
     using SafeERC20 for IERC20;
-    
+
     uint256 constant LOCK_DURATION = 3 days;
 
     struct TokenEscrow {
@@ -21,7 +21,13 @@ contract UntrustedEscrow is ReentrancyGuard {
     mapping(uint256 => TokenEscrow) private tokenEscrows;
     uint256 public nextEscrowId;
 
-    event EscrowCreated(uint256 indexed escrowId, address escrowedToken, address indexed escrowCreator, address indexed escrowBeneficiary, uint256 escrowedAmount);
+    event EscrowCreated(
+        uint256 indexed escrowId,
+        address escrowedToken,
+        address indexed escrowCreator,
+        address indexed escrowBeneficiary,
+        uint256 escrowedAmount
+    );
     event EscrowReleased(uint256 indexed escrowId, address indexed escrowBeneficiary);
 
     /// @notice Creates an escrow with a specific ERC20 token
@@ -29,7 +35,10 @@ contract UntrustedEscrow is ReentrancyGuard {
     /// @param beneficiary Address of the escrow beneficiary (seller)
     /// @param amount Amount of tokens to be escrowed
     /// @return escrowId Id of the created escrow
-    function createTokenEscrow(address escrowedTokenAddress, address beneficiary, uint256 amount) external returns (uint256 escrowId) {
+    function createTokenEscrow(address escrowedTokenAddress, address beneficiary, uint256 amount)
+        external
+        returns (uint256 escrowId)
+    {
         require(amount > 0, "Amount must be greater than 0");
         require(IERC20(escrowedTokenAddress).transferFrom(msg.sender, address(this), amount), "Transfer failed");
 
@@ -48,7 +57,7 @@ contract UntrustedEscrow is ReentrancyGuard {
     /// @param escrowId Id of the escrow
     function releaseTokenEscrow(uint256 escrowId) external nonReentrant {
         TokenEscrow storage escrow = tokenEscrows[escrowId];
-         require(block.timestamp >= escrow.releaseTime, "Escrow is still locked");
+        require(block.timestamp >= escrow.releaseTime, "Escrow is still locked");
         require(msg.sender == escrow.escrowBeneficiary, "Only beneficiary can release");
 
         uint256 amountToRelease = escrow.escrowedAmount;

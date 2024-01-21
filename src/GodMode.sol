@@ -1,13 +1,12 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
-import "@openzeppelin/contracts/access/Ownable2Step.sol";
+import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import {Ownable2Step, Ownable} from "@openzeppelin/contracts/access/Ownable2Step.sol";
 
 // Solidity contract 2: Token with god mode.
 // A special address is able to transfer tokens between addresses at will.
 contract GodMode is ERC20, Ownable2Step {
-
     address public activeGod;
 
     /// @notice Event emitted when the god address is changed.

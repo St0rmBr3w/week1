@@ -1,14 +1,15 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
-import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
-import "@openzeppelin/contracts/access/Ownable2Step.sol";
+import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+import {ERC20, IERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import {Ownable2Step, Ownable} from "@openzeppelin/contracts/access/Ownable2Step.sol";
 
 /// @title SanctionedToken
 /// @notice A fungible token that allows an admin (the owner) to ban and unban addresses from sending and receiving tokens.
 /// @dev Extends ERC20 standard token from OpenZeppelin with sanctioning capabilities.
 contract SanctionedToken is ERC20, Ownable2Step {
+    using SafeERC20 for IERC20;
 
     /// @notice Tracks whether an address is banned or not.
     mapping(address => bool) private bannedAddresses;
@@ -25,7 +26,7 @@ contract SanctionedToken is ERC20, Ownable2Step {
     /// @notice Contract constructor that sets token details.
     /// @param name The name of the token.
     /// @param symbol The symbol of the token.
-    constructor(string memory name, string memory symbol) ERC20(name, symbol) Ownable2Step() Ownable(msg.sender) {}
+    constructor(string memory name, string memory symbol) ERC20(name, symbol) Ownable(msg.sender) {}
 
     /// @notice Allows the owner to mint new tokens.
     /// @param to The address that will receive the minted tokens.
